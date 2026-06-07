@@ -2,9 +2,14 @@ name: 🎉 Build PotPlayerHistoryManager
 
 on:
   push:
+    branches: [ main, master, dev, * ]   # 支持更多分支
+    paths:
+      - '**.pyw'
+      - 'config.ini'
+      - 'logo.ico'
+  pull_request:
     branches: [ main, master ]
-  release:
-    types: [created]
+  workflow_dispatch:     # 手动触发（最重要！）
 
 jobs:
   build:
@@ -14,17 +19,17 @@ jobs:
     - name: 检出代码
       uses: actions/checkout@v4
 
-    - name: 设置 Python 环境
+    - name: 设置 Python
       uses: actions/setup-python@v5
       with:
         python-version: '3.11'
 
-    - name: 安装打包工具
+    - name: 安装工具
       run: |
         python -m pip install --upgrade pip
         pip install nuitka pyinstaller
 
-    - name: 读取 config.ini 并设置环境变量
+    - name: 读取 config.ini 配置
       shell: pwsh
       run: |
         $config = Get-Content config.ini -Raw
@@ -32,7 +37,6 @@ jobs:
         $config = $config -replace '\{YEAR\}', $year
         $config | Set-Content config.ini -Encoding UTF8
 
-        # 解析 config.ini 到环境变量
         foreach ($line in $config -split "`n") {
           if ($line -match '^\s*([^#=]+?)\s*=\s*(.+?)\s*$') {
             $key = $matches[1].Trim()
@@ -41,7 +45,7 @@ jobs:
           }
         }
 
-    - name: Nuitka 打包 (Release)
+    - name: Nuitka 打包
       run: |
         python -m nuitka --standalone --onefile --enable-plugin=tk-inter --assume-yes-for-downloads `
           --output-filename="${{ env.OUTPUT_NAME }}" `
@@ -56,32 +60,8 @@ jobs:
           --copyright="${{ env.COPYRIGHT }}" `
           "${{ env.MAIN_SCRIPT }}"
 
-    - name: 上传 Nuitka 打包结果
+    - name: 上传 Nuitka 结果
       uses: actions/upload-artifact@v4
       with:
         name: PotPlayerHistoryManager-Nuitka
         path: ${{ env.OUTPUT_NAME }}
-
-    - name: PyInstaller 打包（图标兼容性更好）
-      run: |
-        python -m PyInstaller --onefile --noconsole `
-          --icon="${{ env.ICON_FILE }}" `
-          --add-data "${{ env.ICON_FILE }};." `
-          --name PotPlayerHistoryManager `
-          --distpath . `
-          --clean `
-          "${{ env.MAIN_SCRIPT }}"
-
-    - name: 上传 PyInstaller 打包结果
-      uses: actions/upload-artifact@v4
-      with:
-        name: PotPlayerHistoryManager-PyInstaller
-        path: PotPlayerHistoryManager.exe
-
-    - name: 发布到 Release
-      if: github.event_name == 'release'
-      uses: softprops/action-gh-release@v2
-      with:
-        files: |
-          ${{ env.OUTPUT_NAME }}
-          PotPlayerHistoryManager.exe
