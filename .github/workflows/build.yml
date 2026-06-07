@@ -23,7 +23,7 @@ jobs:
         python -m pip install --upgrade pip
         pip install pyinstaller
 
-    - name: 读取 config.ini 配置
+    - name: 读取 config.ini
       shell: pwsh
       run: |
         $content = Get-Content config.ini -Raw -Encoding UTF8
@@ -31,27 +31,27 @@ jobs:
         $content = $content -replace '\{YEAR\}', $year
         $content | Set-Content config.ini -Encoding UTF8
 
-        echo "=== Parsed Config ==="
         foreach ($line in $content -split "`n") {
           if ($line -match '^\s*([^#=]+?)\s*=\s*(.+?)\s*$') {
             $key = $matches[1].Trim()
             $value = $matches[2].Trim()
-            echo "$key = $value"
             "ENV:$key=$value" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
           }
         }
 
     - name: PyInstaller 打包
       run: |
-        python -m PyInstaller --onefile --noconsole `
-          --icon="${{ env.ICON_FILE }}" `
+        python -m PyInstaller `
+          --onefile `
+          --noconsole `
+          --icon "${{ env.ICON_FILE }}" `
           --add-data "${{ env.ICON_FILE }};." `
           --name PotPlayerHistoryManager `
           --distpath . `
           --clean `
           "${{ env.MAIN_SCRIPT }}"
 
-    - name: 上传打包文件
+    - name: 上传打包结果
       uses: actions/upload-artifact@v4
       with:
         name: PotPlayerHistoryManager
