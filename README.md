@@ -24,8 +24,8 @@
 
 ## 📸 界面预览
 
-![主界面](screenshot-main.png)
-![日期搜索功能](screenshot-search.png)
+![主界面](./images/screenshot.png)
+![日期搜索功能](./images/screenshot-search.png)
 
 ---
 
