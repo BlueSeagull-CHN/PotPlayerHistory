@@ -35,11 +35,32 @@ jobs:
           --clean `
           "PotPlayerHistoryManager.pyw"
 
-    - name: 上传打包文件
+    - name: 上传 Artifact（供直接下载）
       uses: actions/upload-artifact@v4
       with:
         name: PotPlayerHistoryManager
         path: PotPlayerHistoryManager.exe
 
-    - name: 显示打包结果
-      run: dir PotPlayerHistoryManager.exe
+    - name: 发布到 GitHub Releases
+      if: github.event_name == 'workflow_dispatch' || github.event_name == 'push'
+      uses: softprops/action-gh-release@v2
+      with:
+        tag_name: v1.0.0
+        name: PotPlayerHistoryManager v1.0.0
+        draft: false
+        prerelease: false
+        files: PotPlayerHistoryManager.exe
+        body: |
+          ### PotPlayer 播放位置记忆管理器 v1.0.0
+
+          **下载**：`PotPlayerHistoryManager.exe`
+
+          **主要功能**：
+          - 启动时自动加载 PotPlayer 配置文件
+          - 支持关键词排除/提取过滤
+          - 按日期搜索旧记录
+          - 一键清理失效文件
+          - 操作撤销功能
+          - 高分屏适配
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
