@@ -23,16 +23,18 @@ jobs:
         python -m pip install --upgrade pip
         pip install nuitka pyinstaller
 
-    - name: 转换 config.ini 为 UTF-8 并解析
+    - name: 读取并解析 config.ini
       shell: pwsh
       run: |
-        # 强制转换为 UTF-8
         $content = Get-Content config.ini -Raw -Encoding UTF8
         $year = (Get-Date).Year
         $content = $content -replace '\{YEAR\}', $year
         $content | Set-Content config.ini -Encoding UTF8
 
-        echo "=== Parsed Variables ==="
+        echo "=== Config Content ==="
+        echo $content
+
+        echo "=== Setting Environment Variables ==="
         foreach ($line in $content -split "`n") {
           if ($line -match '^\s*([^#=]+?)\s*=\s*(.+?)\s*$') {
             $key = $matches[1].Trim()
@@ -42,15 +44,21 @@ jobs:
           }
         }
 
-    - name: 显示环境变量（调试）
+    - name: 显示最终环境变量
       run: |
-        echo "MAIN_SCRIPT=$env:MAIN_SCRIPT"
-        echo "OUTPUT_NAME=$env:OUTPUT_NAME"
-        echo "ICON_FILE=$env:ICON_FILE"
+        echo "MAIN_SCRIPT     = ${{ env.MAIN_SCRIPT }}"
+        echo "OUTPUT_NAME     = ${{ env.OUTPUT_NAME }}"
+        echo "ICON_FILE       = ${{ env.ICON_FILE }}"
+        echo "COMPANY_NAME    = ${{ env.COMPANY_NAME }}"
+        echo "PRODUCT_NAME    = ${{ env.PRODUCT_NAME }}"
 
     - name: Nuitka 打包
       run: |
-        python -m nuitka --standalone --onefile --enable-plugin=tk-inter --assume-yes-for-downloads `
+        python -m nuitka `
+          --standalone `
+          --onefile `
+          --enable-plugin=tk-inter `
+          --assume-yes-for-downloads `
           --output-filename="${{ env.OUTPUT_NAME }}" `
           --windows-icon-from-ico="${{ env.ICON_FILE }}" `
           --include-data-files="${{ env.ICON_FILE }}=./${{ env.ICON_FILE }}" `
