@@ -37,6 +37,7 @@ jobs:
           --name PotPlayerHistoryManager `
           --distpath . `
           --clean `
+          --version-file version.txt `
           "PotPlayerHistoryManager.pyw"
 
     - name: 上传 Artifact
