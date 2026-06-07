@@ -57,5 +57,5 @@ jobs:
         name: PotPlayerHistoryManager
         path: PotPlayerHistoryManager.exe
 
-    - name: 显示打包结果
+    - name: 显示结果
       run: dir PotPlayerHistoryManager.exe
