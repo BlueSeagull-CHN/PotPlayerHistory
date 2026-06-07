@@ -31,14 +31,14 @@
 
 [![下载最新版本](https://img.shields.io/badge/下载最新版本-10.8_MB-blue?style=for-the-badge&logo=windows&logoColor=white)](https://github.com/BlueSeagull-CHN/PotPlayerHistory/releases/latest)
 
-**推荐下载**：`PotPlayerHistoryManager.exe`（单文件绿色便携）
+**推荐下载**：`PotPlayerHistory.exe`（单文件绿色便携）
 
 ---
 
 ## 📖 使用指南
 
 ### 快速上手
-1. 双击运行 `PotPlayerHistoryManager.exe`
+1. 双击运行 `PotPlayerHistory.exe`
 2. 程序会**自动**检测并加载当前目录下的 PotPlayer 配置文件
 3. 使用关键词过滤想要的记录
 4. 点击「按日期搜索」或「清理失效」进行批量管理
