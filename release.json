@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "name": "PotPlayerHistoryManager v1.0.0",
+  "name": "PotPlayerHistory v1.0.0",
   "draft": false,
   "prerelease": false,
   "body": "### PotPlayer 播放位置记忆管理器 v1.0.0\n\n**下载**：`PotPlayerHistory.exe`\n\n**主要功能**：\n- 自动加载 PotPlayer 配置文件（需在Potplayer同目录）\n- 关键词过滤与按日期搜索\n- 失效文件清理\n- 操作撤销功能"
