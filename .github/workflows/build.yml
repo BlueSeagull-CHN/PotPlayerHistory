@@ -18,12 +18,12 @@ jobs:
       with:
         python-version: '3.11'
 
-    - name: 安装工具
+    - name: 安装 PyInstaller
       run: |
         python -m pip install --upgrade pip
-        pip install nuitka pyinstaller
+        pip install pyinstaller
 
-    - name: 读取并解析 config.ini
+    - name: 读取 config.ini 配置
       shell: pwsh
       run: |
         $content = Get-Content config.ini -Raw -Encoding UTF8
@@ -31,10 +31,7 @@ jobs:
         $content = $content -replace '\{YEAR\}', $year
         $content | Set-Content config.ini -Encoding UTF8
 
-        echo "=== Config Content ==="
-        echo $content
-
-        echo "=== Setting Environment Variables ==="
+        echo "=== Parsed Config ==="
         foreach ($line in $content -split "`n") {
           if ($line -match '^\s*([^#=]+?)\s*=\s*(.+?)\s*$') {
             $key = $matches[1].Trim()
@@ -44,29 +41,21 @@ jobs:
           }
         }
 
-    - name: 显示最终环境变量
+    - name: PyInstaller 打包
       run: |
-        echo "MAIN_SCRIPT     = ${{ env.MAIN_SCRIPT }}"
-        echo "OUTPUT_NAME     = ${{ env.OUTPUT_NAME }}"
-        echo "ICON_FILE       = ${{ env.ICON_FILE }}"
-        echo "COMPANY_NAME    = ${{ env.COMPANY_NAME }}"
-        echo "PRODUCT_NAME    = ${{ env.PRODUCT_NAME }}"
-
-    - name: Nuitka 打包
-      run: |
-        python -m nuitka `
-          --standalone `
-          --onefile `
-          --enable-plugin=tk-inter `
-          --assume-yes-for-downloads `
-          --output-filename="${{ env.OUTPUT_NAME }}" `
-          --windows-icon-from-ico="${{ env.ICON_FILE }}" `
-          --include-data-files="${{ env.ICON_FILE }}=./${{ env.ICON_FILE }}" `
-          --windows-console-mode=disable `
-          --company-name="${{ env.COMPANY_NAME }}" `
-          --product-name="${{ env.PRODUCT_NAME }}" `
-          --file-version="${{ env.FILE_VERSION }}" `
-          --product-version="${{ env.FILE_VERSION }}" `
-          --file-description="${{ env.FILE_DESCRIPTION }}" `
-          --copyright="${{ env.COPYRIGHT }}" `
+        python -m PyInstaller --onefile --noconsole `
+          --icon="${{ env.ICON_FILE }}" `
+          --add-data "${{ env.ICON_FILE }};." `
+          --name PotPlayerHistoryManager `
+          --distpath . `
+          --clean `
           "${{ env.MAIN_SCRIPT }}"
+
+    - name: 上传打包文件
+      uses: actions/upload-artifact@v4
+      with:
+        name: PotPlayerHistoryManager
+        path: PotPlayerHistoryManager.exe
+
+    - name: 显示打包结果
+      run: dir PotPlayerHistoryManager.exe
