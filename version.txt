@@ -22,9 +22,9 @@ VSVersionInfo(
             StringStruct(u'CompanyName', u'海鸥工作室'),
             StringStruct(u'FileDescription', u'PotPlayer播放位置记忆管理器'),
             StringStruct(u'FileVersion', u'1.0.0.0'),
-            StringStruct(u'InternalName', u'PotPlayerHistoryManager'),
+            StringStruct(u'InternalName', u'PotPlayerHistory'),
             StringStruct(u'LegalCopyright', u'Copyright (C) 2026 蓝色海鸥'),
-            StringStruct(u'OriginalFilename', u'PotPlayerHistoryManager.exe'),
+            StringStruct(u'OriginalFilename', u'PotPlayerHistory.exe'),
             StringStruct(u'ProductName', u'PotPlayer播放位置记忆管理器'),
             StringStruct(u'ProductVersion', u'1.0.0.0')
           ]
