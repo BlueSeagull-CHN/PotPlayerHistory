@@ -5,6 +5,10 @@ on:
     branches: [ main, master, dev ]
   workflow_dispatch:
 
+# 提升权限，允许创建 Release
+permissions:
+  contents: write
+
 jobs:
   build:
     runs-on: windows-latest
@@ -35,7 +39,7 @@ jobs:
           --clean `
           "PotPlayerHistoryManager.pyw"
 
-    - name: 上传 Artifact（供直接下载）
+    - name: 上传 Artifact
       uses: actions/upload-artifact@v4
       with:
         name: PotPlayerHistoryManager
@@ -56,11 +60,9 @@ jobs:
           **下载**：`PotPlayerHistoryManager.exe`
 
           **主要功能**：
-          - 启动时自动加载 PotPlayer 配置文件
-          - 支持关键词排除/提取过滤
-          - 按日期搜索旧记录
-          - 一键清理失效文件
+          - 自动加载 PotPlayer 配置文件
+          - 关键词过滤与按日期搜索
+          - 失效文件清理
           - 操作撤销功能
-          - 高分屏适配
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
