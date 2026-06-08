@@ -17,7 +17,7 @@ VSVersionInfo(
     StringFileInfo(
       [
         StringTable(
-          u'040904B0',
+          u'080404B0',
           [
             StringStruct(u'CompanyName', u'海鸥工作室'),
             StringStruct(u'FileDescription', u'PotPlayer播放位置记忆管理器'),
